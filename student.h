@@ -1,36 +1,45 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 
-#include <string>
+#include "zmogus.h"
 #include <vector>
+#include <iostream>
 
-class Student {
+class Student : public Zmogus {
 private:
-    std::string vardas_;
-    std::string pavarde_;
     std::vector<int> nd_;
     int egzaminas_;
     double galutinisVidurkis_;
     double galutineMediana_;
-
 public:
-    Student() : egzaminas_(0), galutinisVidurkis_(0), galutineMediana_(0) {}
+    // Konstruktoriai
+    Student();
+    Student(std::string vardas, std::string pavarde, std::vector<int> nd, int egz);
 
-    Student(std::string vardas, std::string pavarde, std::vector<int> nd, int egz)
-        : vardas_(vardas), pavarde_(pavarde), nd_(nd), egzaminas_(egz) {
-        apskaiciuotiGalutinius();
-    }
+    // Rule of Five
+    ~Student();
+    Student(const Student& other);
+    Student(Student&& other) noexcept;
+    Student& operator=(const Student& other);
+    Student& operator=(Student&& other) noexcept;
 
+    // Kiti metodai
     void apskaiciuotiGalutinius();
 
-    const std::string& gautiVarda() const { return vardas_; }
-    const std::string& gautiPavarde() const { return pavarde_; }
-    const std::vector<int>& gautiNd() const { return nd_; }
-    int gautiEgzamina() const { return egzaminas_; }
-    double gautiVidurki() const { return galutinisVidurkis_; }
-    double gautiMediana() const { return galutineMediana_; }
+    const std::string& gautiVarda() const override;
+    const std::string& gautiPavarde() const override;
+    const std::vector<int>& gautiNd() const;
+    int gautiEgzamina() const;
+    double gautiVidurki() const;
+    double gautiMediana() const;
+
+    // Operatoriai
+    friend std::ostream& operator<<(std::ostream& os, const Student& s);
+    friend std::istream& operator>>(std::istream& is, Student& s);
 };
+
 double skaiciuotiVidurki(const std::vector<int>& paz);
 double skaiciuotiMediana(std::vector<int> paz);
 
-#endif
+#endif // STUDENT_H
+

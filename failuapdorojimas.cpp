@@ -83,3 +83,4 @@ void skirstytiStudentus(const std::vector<Student>& studentai,
         return a.gautiVidurki() < b.gautiVidurki();
     });
 }
+

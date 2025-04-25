@@ -53,4 +53,5 @@ void splitStudentsPartitionStrategy(Container& students, Container& kietekai, Co
     }
 }
 
-#endif
+#endif // FAILUAPDOROJIMAS_H
+

@@ -7,7 +7,7 @@
 #include <chrono>
 #include <string>
 
-// Matavimo funkcija – grąžina vykdymo trukmę milisekundėmis.
+// Matavimo funkcija
 template <typename Func>
 long measureExecutionTime(Func func) {
     auto start = std::chrono::high_resolution_clock::now();
@@ -16,7 +16,7 @@ long measureExecutionTime(Func func) {
     return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 }
 
-// Pagalbinių funkcijų: konvertuoja std::list arba std::deque į std::vector, kad būtų galima panaudoti išvedimo funkciją.
+// Pagalbinių funkcijų
 template <typename Container>
 std::vector<Student> toVector(const Container& cont) {
     return std::vector<Student>(cont.begin(), cont.end());
@@ -24,7 +24,6 @@ std::vector<Student> toVector(const Container& cont) {
 
 int main() {
     try {
-        // Testavimo failų pavadinimai – visi tyrimams naudojami tie patys duomenys.
         std::vector<std::string> failai = {
             "studentai100.txt",
             "studentai1000.txt",
@@ -35,7 +34,6 @@ int main() {
         for (const auto& filename : failai) {
             std::vector<Student> original = nuskaitytiIsFailo(filename);
 
-            // ----- TESTAI SU std::vector -----
             {
                 std::vector<Student> vCopy = original;
                 std::vector<Student> kietekai, vargsiukai;
@@ -46,6 +44,7 @@ int main() {
                 irasytiIFaila(vargsiukai, "vector_copy_vargsiukai_" + filename);
                 std::cout << "std::vector, Copy strategija (" << filename << "): " << t << " ms\n";
             }
+
             {
                 std::vector<Student> vMove = original;
                 std::vector<Student> vargsiukai;
@@ -56,6 +55,7 @@ int main() {
                 irasytiIFaila(vargsiukai, "vector_move_vargsiukai_" + filename);
                 std::cout << "std::vector, Move strategija (" << filename << "): " << t << " ms\n";
             }
+
             {
                 std::vector<Student> vPart = original;
                 std::vector<Student> kietekai, vargsiukai;
@@ -67,7 +67,6 @@ int main() {
                 std::cout << "std::vector, Partition strategija (" << filename << "): " << t << " ms\n";
             }
 
-            // ----- TESTAI SU std::list -----
             {
                 std::list<Student> lCopy(original.begin(), original.end());
                 std::list<Student> kietekai, vargsiukai;
@@ -79,7 +78,6 @@ int main() {
                 std::cout << "std::list, Copy strategija (" << filename << "): " << t << " ms\n";
             }
 
-            // ----- TESTAI SU std::deque -----
             {
                 std::deque<Student> dCopy(original.begin(), original.end());
                 std::deque<Student> kietekai, vargsiukai;
