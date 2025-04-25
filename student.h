@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Student {
 private:
@@ -14,23 +15,34 @@ private:
     double galutineMediana_;
 
 public:
-    Student() : egzaminas_(0), galutinisVidurkis_(0), galutineMediana_(0) {}
+    // Konstruktoriai
+    Student();
+    Student(std::string vardas, std::string pavarde, std::vector<int> nd, int egz);
 
-    Student(std::string vardas, std::string pavarde, std::vector<int> nd, int egz)
-        : vardas_(vardas), pavarde_(pavarde), nd_(nd), egzaminas_(egz) {
-        apskaiciuotiGalutinius();
-    }
+    // Rule of Five
+    ~Student();
+    Student(const Student& other);
+    Student(Student&& other) noexcept;
+    Student& operator=(const Student& other);
+    Student& operator=(Student&& other) noexcept;
 
+    // Kiti metodai
     void apskaiciuotiGalutinius();
 
-    const std::string& gautiVarda() const { return vardas_; }
-    const std::string& gautiPavarde() const { return pavarde_; }
-    const std::vector<int>& gautiNd() const { return nd_; }
-    int gautiEgzamina() const { return egzaminas_; }
-    double gautiVidurki() const { return galutinisVidurkis_; }
-    double gautiMediana() const { return galutineMediana_; }
+    const std::string& gautiVarda() const;
+    const std::string& gautiPavarde() const;
+    const std::vector<int>& gautiNd() const;
+    int gautiEgzamina() const;
+    double gautiVidurki() const;
+    double gautiMediana() const;
+
+    // Operatoriai
+    friend std::ostream& operator<<(std::ostream& os, const Student& s);
+    friend std::istream& operator>>(std::istream& is, Student& s);
 };
+
 double skaiciuotiVidurki(const std::vector<int>& paz);
 double skaiciuotiMediana(std::vector<int> paz);
 
 #endif
+

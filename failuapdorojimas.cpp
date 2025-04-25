@@ -36,7 +36,7 @@ std::vector<Student> nuskaitytiIsFailo(const std::string& filename) {
 
     std::vector<Student> studentai;
     std::string line;
-    std::getline(inFile, line); // praleidžiam antraštę
+    std::getline(inFile, line); // antraštė
 
     while (std::getline(inFile, line)) {
         if (line.empty()) continue;
@@ -83,3 +83,4 @@ void skirstytiStudentus(const std::vector<Student>& studentai,
         return a.gautiVidurki() < b.gautiVidurki();
     });
 }
+
