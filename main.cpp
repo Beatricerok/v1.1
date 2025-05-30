@@ -1,0 +1,98 @@
+#include "failuapdorojimas.h"
+#include "student.h"
+#include <iostream>
+#include <vector>
+#include <list>
+#include <deque>
+#include <chrono>
+#include <string>
+
+// Matavimo funkcija
+template <typename Func>
+long measureExecutionTime(Func func) {
+    auto start = std::chrono::high_resolution_clock::now();
+    func();
+    auto end = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+}
+
+// Pagalbinių funkcijų
+template <typename Container>
+std::vector<Student> toVector(const Container& cont) {
+    return std::vector<Student>(cont.begin(), cont.end());
+}
+
+int main() {
+    try {
+        std::vector<std::string> failai = {
+            "studentai100.txt",
+            "studentai1000.txt",
+            "studentai10000.txt",
+            "studentai100000.txt"
+        };
+
+        for (const auto& filename : failai) {
+            std::vector<Student> original = nuskaitytiIsFailo(filename);
+
+            {
+                std::vector<Student> vCopy = original;
+                std::vector<Student> kietekai, vargsiukai;
+                long t = measureExecutionTime([&]() {
+                    splitStudentsCopyStrategy(vCopy, kietekai, vargsiukai);
+                });
+                irasytiIFaila(kietekai, "vector_copy_kietekai_" + filename);
+                irasytiIFaila(vargsiukai, "vector_copy_vargsiukai_" + filename);
+                std::cout << "std::vector, Copy strategija (" << filename << "): " << t << " ms\n";
+            }
+
+            {
+                std::vector<Student> vMove = original;
+                std::vector<Student> vargsiukai;
+                long t = measureExecutionTime([&]() {
+                    splitStudentsMoveStrategy(vMove, vargsiukai);
+                });
+                irasytiIFaila(vMove, "vector_move_kietekai_" + filename);
+                irasytiIFaila(vargsiukai, "vector_move_vargsiukai_" + filename);
+                std::cout << "std::vector, Move strategija (" << filename << "): " << t << " ms\n";
+            }
+
+            {
+                std::vector<Student> vPart = original;
+                std::vector<Student> kietekai, vargsiukai;
+                long t = measureExecutionTime([&]() {
+                    splitStudentsPartitionStrategy(vPart, kietekai, vargsiukai);
+                });
+                irasytiIFaila(kietekai, "vector_partition_kietekai_" + filename);
+                irasytiIFaila(vargsiukai, "vector_partition_vargsiukai_" + filename);
+                std::cout << "std::vector, Partition strategija (" << filename << "): " << t << " ms\n";
+            }
+
+            {
+                std::list<Student> lCopy(original.begin(), original.end());
+                std::list<Student> kietekai, vargsiukai;
+                long t = measureExecutionTime([&]() {
+                    splitStudentsCopyStrategy(lCopy, kietekai, vargsiukai);
+                });
+                irasytiIFaila(toVector(kietekai), "list_copy_kietekai_" + filename);
+                irasytiIFaila(toVector(vargsiukai), "list_copy_vargsiukai_" + filename);
+                std::cout << "std::list, Copy strategija (" << filename << "): " << t << " ms\n";
+            }
+
+            {
+                std::deque<Student> dCopy(original.begin(), original.end());
+                std::deque<Student> kietekai, vargsiukai;
+                long t = measureExecutionTime([&]() {
+                    splitStudentsCopyStrategy(dCopy, kietekai, vargsiukai);
+                });
+                irasytiIFaila(toVector(kietekai), "deque_copy_kietekai_" + filename);
+                irasytiIFaila(toVector(vargsiukai), "deque_copy_vargsiukai_" + filename);
+                std::cout << "std::deque, Copy strategija (" << filename << "): " << t << " ms\n";
+            }
+
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Klaida: " << e.what() << "\n";
+    }
+
+    return 0;
+}
